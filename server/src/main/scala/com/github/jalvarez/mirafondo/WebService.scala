@@ -6,6 +6,7 @@ import com.github.jalvarez.mirafondo.twirl.Implicits._
 import akka.stream.scaladsl.Source
 import akka.http.scaladsl.model._
 import akka.util.ByteString
+import scala.concurrent.duration._
 
 class WebService() extends Directives {
 
@@ -19,7 +20,8 @@ class WebService() extends Directives {
     } ~
     path("topic") {
       get {
-        complete(HttpEntity(ContentType(MediaTypes.`application/json`), Source.single("test").map { s => ByteString(s)}))
+        complete(HttpEntity(ContentType(MediaTypes.`application/json`), 
+                 Source.tick(250.milliseconds, 500.milliseconds, "test").take(10).map { s => ByteString(s)}))
       }
     } ~
       pathPrefix("assets" / Remaining) { file =>
