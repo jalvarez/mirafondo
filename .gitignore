@@ -1,0 +1,21 @@
+logs
+target
+.idea
+.idea_modules
+.classpath
+.project
+.settings
+/RUNNING_PID
+libexec
+/node_modules
+
+# hidden cross project folders
+shared/.js
+shared/.jvm
+shared/**/*.class
+
+# eclipse
+.cache-main
+.cache-tests
+.worksheet/
+bin/
