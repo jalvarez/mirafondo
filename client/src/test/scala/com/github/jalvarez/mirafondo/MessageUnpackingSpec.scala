@@ -7,7 +7,7 @@ import MessageUnpacking.Message
 
 class MessageUnpackingSpec extends WordSpec with Matchers with MessagePackageDefinition {
   "Message unpacking" when {
-    "receive a packed message" must {
+    "unpack a string corresponding to a packed message" must {
       val position = 42
       val messageContent = "test"
       val packedMessage = s"${messageHead} ${position}\n${messageContent}\n${messageTail}"
@@ -25,9 +25,13 @@ class MessageUnpackingSpec extends WordSpec with Matchers with MessagePackageDef
       "return a message with content" in {
         messages(0).content shouldBe messageContent
       }
+      
+      "return a message lastest index processed in input" in {
+        messages(0).lastIndex shouldBe packedMessage.length()
+      }
     }
     
-    "receive an incomplete packed message" must {
+    "unpack a string with an incomplete packed message" must {
       val incompleteMessage = s"${messageHead} 101\nincomplete test\n"
       
       val messages = MessageUnpacking.unpack(incompleteMessage)
@@ -37,7 +41,7 @@ class MessageUnpackingSpec extends WordSpec with Matchers with MessagePackageDef
       }
     }
     
-    "receive an interleaved packed message" must {
+    "unpack a string than content an interleaved packed message" must {
       val messageContent = "interleaved test"
       val interleaved = s"prefix${messageHead} 169\n${messageContent}\n${messageTail}suffix"
       
@@ -48,7 +52,7 @@ class MessageUnpackingSpec extends WordSpec with Matchers with MessagePackageDef
       }
     }
     
-    "receive a string that contents N messages" must {
+    "unpack a string that contents N messages" must {
       val N = 10
       val packedMessages = (0 until N).map { i => s"${messageHead} ${i}\ncontent ${i}\n${messageTail}" }
                                       .mkString

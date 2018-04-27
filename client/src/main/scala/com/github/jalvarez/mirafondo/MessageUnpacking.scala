@@ -16,12 +16,14 @@ object MessageUnpacking extends MessagePackageDefinition {
       val contentBegin = heads.end
       val contentEndMatch = endOfMessage.findFirstMatchIn(packedMessage.substring(contentBegin))
       if (contentEndMatch.isDefined) {
+        val position = heads.group(1).toInt
         val contentEnd = contentBegin + contentEndMatch.get.start
-        messages += Message(heads.group(1).toInt, packedMessage.substring(contentBegin, contentEnd))
+        val lastIndex = contentBegin + contentEndMatch.get.end
+        messages += Message(position, packedMessage.substring(contentBegin, contentEnd), lastIndex)
       }
     }
     messages.toSeq
   }
   
-  case class Message(position: Int, content: String)
+  case class Message(position: Int, content: String, lastIndex: Int)
 }
