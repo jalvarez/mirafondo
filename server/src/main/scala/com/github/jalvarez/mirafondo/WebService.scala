@@ -20,8 +20,7 @@ class WebService() extends Directives {
     } ~
     path("topic") {
       get {
-        complete(HttpEntity(ContentType(MediaTypes.`application/json`), 
-                 Source.tick(250.milliseconds, 500.milliseconds, "test").take(10).map { s => ByteString(s)}))
+        complete(HttpEntity(ContentType(MediaTypes.`application/json`), MessageSource()))
       }
     } ~
       pathPrefix("assets" / Remaining) { file =>

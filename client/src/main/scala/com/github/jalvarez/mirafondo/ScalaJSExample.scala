@@ -17,10 +17,14 @@ object ScalaJSExample {
     }
     xhr.onprogress = { _ =>
       if (xhr.responseText.length > readResponse) {
-        val item = dom.document.createElement("li")
-        item.textContent = xhr.responseText.substring(readResponse, xhr.responseText.length) 
-        items.appendChild(item)
-        readResponse = xhr.responseText.length 
+        val newResponseText = xhr.responseText.substring(readResponse, xhr.responseText.length)
+        val messages = MessageUnpacking.unpack(newResponseText)
+        messages.foreach { message =>
+          val item = dom.document.createElement("li")
+          item.textContent = message.content 
+          items.appendChild(item)
+        }
+        readResponse += messages.last.lastIndex
       }
     }
     xhr.send()
