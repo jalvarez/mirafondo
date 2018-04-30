@@ -34,7 +34,8 @@ lazy val client = (project in file("client")).settings(commonSettings).settings(
   scalaJSUseMainModuleInitializer := true,
   libraryDependencies ++= Seq(
     "org.scala-js" %%% "scalajs-dom" % "0.9.5",
-    "org.scalatest" %%% "scalatest" % "3.0.5" % "test"
+    "org.scalatest" %%% "scalatest" % "3.0.5" % Test,
+    "org.scalamock" %%% "scalamock-scalatest-support" % "3.6.0" % Test
   )
 ).enablePlugins(ScalaJSPlugin, ScalaJSWeb).
   dependsOn(sharedJs)

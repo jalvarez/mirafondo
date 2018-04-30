@@ -18,9 +18,9 @@ class WebService() extends Directives {
         }
       }
     } ~
-    path("topic") {
+    path("topic" / Remaining) { topicName =>
       get {
-        complete(HttpEntity(ContentType(MediaTypes.`application/json`), MessageSource()))
+        complete(HttpEntity(ContentType(MediaTypes.`application/json`), MessageSource(topicName)))
       }
     } ~
       pathPrefix("assets" / Remaining) { file =>
