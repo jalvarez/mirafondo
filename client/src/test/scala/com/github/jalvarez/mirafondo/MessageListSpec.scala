@@ -17,12 +17,12 @@ class MessageListSpec extends WordSpec with Matchers with MockFactory with Messa
         val xhrMock = mock[SimpleHttpRequest]
         
         inSequence {
-        (xhrMock.open _).expects("GET", s"/topic/${f.topic}")
-        (xhrMock.setOnprogressCallback _).expects(*)
-        (xhrMock.send _).expects(*)
+          (xhrMock.open _).expects("GET", s"/${f.context}/topic/${f.topic}")
+          (xhrMock.setOnprogressCallback _).expects(*)
+          (xhrMock.send _).expects(*)
         }
         
-        val list = new MessageList(xhrMock)
+        val list = new MessageList(xhrMock, f.context)
         list.load(f.topic)
       }
     }
@@ -35,7 +35,7 @@ class MessageListSpec extends WordSpec with Matchers with MockFactory with Messa
         val xhrStub = new SimpleHttpRequestStub()
         xhrStub.setResponseText(packedMessage)
         
-        val list = new MessageList(xhrStub)
+        val list = new MessageList(xhrStub, f.context)
         val onNewMessageMock = mockFunction[Message, Unit]
         list.setOnNewMessage(onNewMessageMock).load(f.topic) 
         
@@ -51,7 +51,7 @@ class MessageListSpec extends WordSpec with Matchers with MockFactory with Messa
         val packedMessages = (1 to 2).map { i => s"${messageHead} ${i}\ntest${i}\n${messageTail}" }
         
         val xhrStub = new SimpleHttpRequestStub()
-        val list = new MessageList(xhrStub)
+        val list = new MessageList(xhrStub, f.context)
         val onNewMessageMock = mockFunction[Message, Unit]
         list.setOnNewMessage(onNewMessageMock).load(f.topic) 
         
@@ -66,6 +66,7 @@ class MessageListSpec extends WordSpec with Matchers with MockFactory with Messa
   }
   
   def fixtures = new {
+    val context = "test"
     val topic = "test-topic"
   }
 }

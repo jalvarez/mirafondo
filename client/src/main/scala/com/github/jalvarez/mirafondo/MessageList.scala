@@ -3,7 +3,7 @@ package com.github.jalvarez.mirafondo
 import scala.scalajs.js
 import MessageUnpacking.Message
 
-class MessageList(xhr: SimpleHttpRequest) {
+class MessageList(xhr: SimpleHttpRequest, context: String) {
   private var readResponse = 0
   
   private var onNewMessage: Function[Message, Unit] = _
@@ -14,7 +14,7 @@ class MessageList(xhr: SimpleHttpRequest) {
   }
   
   def load(topicName: String): MessageList = {
-    xhr.open("GET", s"/topic/${topicName}")
+    xhr.open("GET", s"/${context}/topic/${topicName}")
     xhr.setOnprogressCallback { _: Unit =>
       if (xhr.responseText.length > readResponse) {
         val newResponseText = xhr.responseText.substring(readResponse, xhr.responseText.length)

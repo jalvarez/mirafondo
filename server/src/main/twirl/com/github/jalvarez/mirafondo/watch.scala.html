@@ -1,6 +1,6 @@
-@(topicName: String)
+@(context: String, topicName: String)
 
-@main(s"${topicName} topic watcher") {
+@main(context, s"${topicName} topic watcher") {
     <h2>Messages in @topicName</h2>
     <ul id="items">
     </ul>

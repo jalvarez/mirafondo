@@ -5,13 +5,15 @@ import org.scalajs.dom
 object Main {
   def main(args: Array[String]): Unit = {
     val pathname = dom.window.location.pathname
-    val path = "^/([^/]+).*".r
+    val path = "^/([^/]+)/([^/]+)?.*".r
     
     pathname match {
-      case path("watch") =>
-        TopicWatcher.run(pathname)
+      case path(context, "watch") =>
+        TopicWatcher.run(context, pathname)
+      case path(context, _) =>
+        Welcome.run(context, pathname)
       case _ =>
-        Welcome.run(pathname)
+        // Nothing
     }
   }
 }

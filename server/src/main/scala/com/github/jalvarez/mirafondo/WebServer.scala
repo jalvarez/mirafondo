@@ -17,6 +17,7 @@ object WebServer {
     val groupId = config.getString("kafka.group-id")
 
     val service = new WebService {
+      override val context = config.getString("http.context")
       override val messageSource: MessageSource = utils.FakeMessageSource //new KafkaMessageSource(system, kafkaServers, groupId)
     }
 
