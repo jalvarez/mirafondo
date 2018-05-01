@@ -13,8 +13,12 @@ object WebServer {
     val config = ConfigFactory.load()
     val interface = config.getString("http.interface")
     val port = config.getInt("http.port")
+    val kafkaServers = config.getString("kafka.servers")
+    val groupId = config.getString("kafka.group-id")
 
-    val service = new WebService()
+    val service = new WebService {
+      override val messageSource: MessageSource = new KafkaMessageSource(system, kafkaServers, groupId)
+    }
 
     Http().bindAndHandle(service.route, interface, port)
 
