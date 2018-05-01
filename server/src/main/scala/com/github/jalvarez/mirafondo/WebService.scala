@@ -1,7 +1,6 @@
 package com.github.jalvarez.mirafondo
 
 import akka.http.scaladsl.server.Directives
-import com.github.jalvarez.mirafondo.shared.SharedMessages
 import com.github.jalvarez.mirafondo.twirl.Implicits._
 import akka.stream.scaladsl.Source
 import akka.http.scaladsl.model._
@@ -17,9 +16,16 @@ trait WebService extends Directives {
     pathSingleSlash {
       get {
         complete {
-          html.index.render(SharedMessages.itWorks)
+          html.index.render("")
         }
       }
+    } ~
+    path("watch" / Remaining) { topicName =>
+      get {
+        complete {
+          html.watch.render(topicName)
+        }
+      } 
     } ~
     path("topic" / Remaining) { topicName =>
       get {
