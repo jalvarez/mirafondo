@@ -30,9 +30,11 @@ trait WebService extends Directives {
         } 
       } ~
       path("topic" / Remaining) { topicName =>
-        get {
-          complete(HttpEntity(ContentType(MediaTypes.`application/json`),
-                   messageSource(topicName, MESSAGES_LIMIT)))
+        parameters('from.as[Long].?) { (from) =>
+          get {
+            complete(HttpEntity(ContentType(MediaTypes.`application/json`),
+                     messageSource(topicName, MESSAGES_LIMIT, from)))
+          }
         }
       } ~
       pathPrefix("assets" / Remaining) { file =>

@@ -4,5 +4,5 @@ import akka.stream.scaladsl.Source
 import akka.util.ByteString
 
 trait MessageSource {
-  def apply(topicName: String, limit: Int): Source[ByteString, _]
+  def apply(topicName: String, limit: Int, from: Option[Long]): Source[ByteString, _]
 }

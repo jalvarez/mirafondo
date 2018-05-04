@@ -4,6 +4,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigFactory
+import scala.util.Try
 
 object WebServer {
   def main(args: Array[String]) {
@@ -18,7 +19,9 @@ object WebServer {
 
     val service = new WebService {
       override val context = config.getString("http.context")
-      override val messageSource: MessageSource = utils.FakeMessageSource //new KafkaMessageSource(system, kafkaServers, groupId)
+      val usingFakeSource = Try(config.getBoolean("use-fake-source")).getOrElse(false)
+      override val messageSource: MessageSource = if (usingFakeSource) utils.FakeMessageSource
+                                                  else new KafkaMessageSource(system, kafkaServers, groupId)
     }
 
     Http().bindAndHandle(service.route, interface, port)

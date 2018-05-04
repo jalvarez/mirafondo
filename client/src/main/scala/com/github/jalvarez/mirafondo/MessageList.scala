@@ -13,8 +13,9 @@ class MessageList(xhr: SimpleHttpRequest, context: String) {
     this
   }
   
-  def load(topicName: String): MessageList = {
-    xhr.open("GET", s"/${context}/topic/${topicName}")
+  def load(topicName: String, from: Option[Long]): MessageList = {
+    val queryParameters = from.map{ f => s"?from=${f}" }.getOrElse("")
+    xhr.open("GET", s"/${context}/topic/${topicName}${queryParameters}")
     xhr.setOnprogressCallback { _: Unit =>
       if (xhr.responseText.length > readResponse) {
         val newResponseText = xhr.responseText.substring(readResponse, xhr.responseText.length)

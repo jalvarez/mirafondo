@@ -23,7 +23,7 @@ class MessageListSpec extends WordSpec with Matchers with MockFactory with Messa
         }
         
         val list = new MessageList(xhrMock, f.context)
-        list.load(f.topic)
+        list.load(f.topic, None)
       }
     }
     
@@ -37,7 +37,7 @@ class MessageListSpec extends WordSpec with Matchers with MockFactory with Messa
         
         val list = new MessageList(xhrStub, f.context)
         val onNewMessageMock = mockFunction[Message, Unit]
-        list.setOnNewMessage(onNewMessageMock).load(f.topic) 
+        list.setOnNewMessage(onNewMessageMock).load(f.topic, None) 
         
         onNewMessageMock.expects(*).once()
         
@@ -53,7 +53,7 @@ class MessageListSpec extends WordSpec with Matchers with MockFactory with Messa
         val xhrStub = new SimpleHttpRequestStub()
         val list = new MessageList(xhrStub, f.context)
         val onNewMessageMock = mockFunction[Message, Unit]
-        list.setOnNewMessage(onNewMessageMock).load(f.topic) 
+        list.setOnNewMessage(onNewMessageMock).load(f.topic, None) 
         
         onNewMessageMock.expects(*).twice()
         
@@ -61,6 +61,24 @@ class MessageListSpec extends WordSpec with Matchers with MockFactory with Messa
         xhrStub.onprogress(Unit)
         xhrStub.setResponseText(packedMessages.mkString("\n"))
         xhrStub.onprogress(Unit)
+      }
+    }
+    
+    "is loaded from a specific position" must {
+      "send a xml http request using a from parameter" in {
+        val f = fixtures
+        val from = 101L
+        
+        val xhrMock = mock[SimpleHttpRequest]
+        
+        inSequence {
+          (xhrMock.open _).expects("GET", s"/${f.context}/topic/${f.topic}?from=${from}")
+          (xhrMock.setOnprogressCallback _).expects(*)
+          (xhrMock.send _).expects(*)
+        }
+        
+        val list = new MessageList(xhrMock, f.context)
+        list.load(f.topic, Some(from))
       }
     }
   }
