@@ -5,21 +5,39 @@ import scala.util.Try
 
 object Welcome {
   def run(context: String, urlPath: String): Unit = {
-    for (input <- Try(dom.document.getElementById("inputTopic").asInstanceOf[dom.html.Input]);
+    for (input <- getInputValue("inputTopic");
          button <- Try(dom.document.getElementById("watchButton").asInstanceOf[dom.html.Button])) {
+      
       input.onkeydown = { ke =>
         if (ke.keyCode == 13) {
-          if (input.value.length > 0) {
-            dom.window.location.pathname = s"/${context}/watch/${input.value}"
-          }
+          for (tn <- topicName) navigateTo(context, tn, from)
         }
       }
       
       button.onclick = { _ =>
-        if (input.value.length > 0) {
-          dom.window.location.pathname = s"/${context}/watch/${input.value}"
-        }
+        for (tn <- topicName) navigateTo(context, tn, from)
       }
     }
+  }
+  
+  private def navigateTo(context: String, topic: String, from: Option[Long]): Unit = {
+    val qs = from.map { f => s"?from=${f}" }.getOrElse("")
+    dom.window.location.href = s"/${context}/watch/${topic}${qs}"
+  }
+  
+  private def from: Option[Long] = {
+    (for (input <- getInputValue("inputFrom"))
+      yield { input.value.toLong }).toOption
+  }
+  
+  private def topicName: Option[String] = {
+    (for (input <- getInputValue("inputTopic"))
+      yield { 
+        if (input.value.length > 0) Some(input.value) else None
+      }).toOption.flatten
+  }
+  
+  private def getInputValue(inputId: String): Try[dom.html.Input] = {
+    Try(dom.document.getElementById(inputId).asInstanceOf[dom.html.Input])
   }
 }
