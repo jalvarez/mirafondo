@@ -1,7 +1,10 @@
 @(context: String, topicName: String)
 
 @main(context, s"${topicName} topic watcher") {
-    <h2>Messages in @topicName</h2>
-    <ul id="items">
-    </ul>
+    <h5>Messages in @topicName</h5>
+    <ul id="items" class="list-group"></ul>
+    <button id="previous-button"
+            type="button"
+            style="margin-top: 1em;"
+            class="btn btn-primary btn-lg btn-block">Previous messages</button>
 }

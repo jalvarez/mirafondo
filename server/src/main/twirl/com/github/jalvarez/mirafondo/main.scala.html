@@ -5,9 +5,27 @@
 <html>
   <head>
     <title>@title</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+          integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.0.12/css/all.css"
+          integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9"
+          crossorigin="anonymous">
   </head>
   <body>
-   @content
-   @scalajs.html.scripts("mirafondo_client", name => "/" + context + s"/assets/$name", name => getClass.getResource(s"/public/$name") != null)
+    <nav class="navbar navbar-light bg-light">
+      <span class="navbar-brand mb-0 h1">
+        <i class="far fa-eye"></i>
+        Mirafondo
+      </span>
+    </nav>
+    <div class="container-fluid">
+      @content
+    </div>
+    @scalajs.html.scripts("mirafondo_client",
+                          name => "/" + context + s"/assets/$name",
+                          name => getClass.getResource(s"/public/$name") != null)
   </body>
 </html>

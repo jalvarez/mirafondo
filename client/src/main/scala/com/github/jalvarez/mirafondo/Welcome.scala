@@ -5,12 +5,15 @@ import scala.util.Try
 
 object Welcome {
   def run(context: String, urlPath: String): Unit = {
-    for (input <- getInputValue("inputTopic");
+    for (inputTopic <- getInputValue("inputTopic");
+         inputFrom <- getInputValue("inputFrom");
          button <- Try(dom.document.getElementById("watchButton").asInstanceOf[dom.html.Button])) {
       
-      input.onkeydown = { ke =>
-        if (ke.keyCode == 13) {
-          for (tn <- topicName) navigateTo(context, tn, from)
+      Seq(inputTopic, inputFrom).foreach { input =>
+        input.onkeydown = { ke =>
+          if (ke.keyCode == 13) {
+            for (tn <- topicName) navigateTo(context, tn, from)
+          }
         }
       }
       
