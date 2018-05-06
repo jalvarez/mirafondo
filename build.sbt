@@ -35,6 +35,7 @@ lazy val client = (project in file("client")).settings(commonSettings).settings(
   jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv(),
   libraryDependencies ++= Seq(
     "org.scala-js" %%% "scalajs-dom" % "0.9.5",
+    "com.lihaoyi" %%% "scalatags" % "0.6.7",
     "org.scalatest" %%% "scalatest" % "3.0.5" % Test,
     "org.scalamock" %%% "scalamock-scalatest-support" % "3.6.0" % Test
   )
