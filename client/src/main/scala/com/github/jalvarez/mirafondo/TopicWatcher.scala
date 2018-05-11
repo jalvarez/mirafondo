@@ -5,7 +5,7 @@ import dom.raw.XMLHttpRequest
 
 object TopicWatcher {
   def run(context: String, urlPath: String): Unit = {
-    val topicWatchUrl = TopicWatchUrl(urlPath + dom.window.location.search)
+    val topicWatchUrl = TopicWatchPath(urlPath + dom.window.location.search)
     val xhr = HttpRequestSimplificator(new XMLHttpRequest())
     val messageList = new MessageList(xhr, context)
     val messageRender = new MessageRender(dom.document.getElementById("items"))
