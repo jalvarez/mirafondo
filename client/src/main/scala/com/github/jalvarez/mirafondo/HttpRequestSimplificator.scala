@@ -12,5 +12,9 @@ case class HttpRequestSimplificator(xhr: XMLHttpRequest) extends SimpleHttpReque
 
   def setOnprogressCallback(c: Function1[Unit, _]) = {
     xhr.onprogress = { _ => c(Unit) }
-  } 
+  }
+  
+  def setOnloadCallback(c: Function1[Unit, _]) = {
+    xhr.onload = { _ => c(Unit) }
+  }
 }

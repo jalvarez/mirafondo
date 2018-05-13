@@ -19,6 +19,7 @@ class MessageListSpec extends WordSpec with Matchers with MockFactory with Messa
         inSequence {
           (xhrMock.open _).expects("GET", s"/${f.context}/topic/${f.topic}")
           (xhrMock.setOnprogressCallback _).expects(*)
+          (xhrMock.setOnloadCallback _).expects(*)
           (xhrMock.send _).expects(*)
         }
         
@@ -37,11 +38,29 @@ class MessageListSpec extends WordSpec with Matchers with MockFactory with Messa
         
         val list = new MessageList(xhrStub, f.context)
         val onNewMessageMock = mockFunction[Message, Unit]
-        list.setOnNewMessage(onNewMessageMock).load(f.topic, None) 
+        list.onNewMessage(onNewMessageMock).load(f.topic, None) 
         
         onNewMessageMock.expects(*).once()
         
         xhrStub.onprogress(Unit)
+      }
+    }
+    
+    "receive only a message from server" must {      
+      "invoke onRunOutMessages callback" in {
+        val f = fixtures
+        val packedMessage = s"${messageHead} 101\ntest\n${messageTail}"
+        
+        val xhrStub = new SimpleHttpRequestStub()
+        xhrStub.setResponseText(packedMessage)
+        
+        val list = new MessageList(xhrStub, f.context)
+        val onRunOutMessages = mockFunction[Option[Message], Unit]
+        list.onRunOutMessages(onRunOutMessages).load(f.topic, None) 
+        
+        onRunOutMessages.expects(*).once()
+        
+        xhrStub.onload(Unit)
       }
     }
     
@@ -53,7 +72,7 @@ class MessageListSpec extends WordSpec with Matchers with MockFactory with Messa
         val xhrStub = new SimpleHttpRequestStub()
         val list = new MessageList(xhrStub, f.context)
         val onNewMessageMock = mockFunction[Message, Unit]
-        list.setOnNewMessage(onNewMessageMock).load(f.topic, None) 
+        list.onNewMessage(onNewMessageMock).load(f.topic, None) 
         
         onNewMessageMock.expects(*).twice()
         
@@ -74,6 +93,7 @@ class MessageListSpec extends WordSpec with Matchers with MockFactory with Messa
         inSequence {
           (xhrMock.open _).expects("GET", s"/${f.context}/topic/${f.topic}?from=${from}")
           (xhrMock.setOnprogressCallback _).expects(*)
+          (xhrMock.setOnloadCallback _).expects(*)
           (xhrMock.send _).expects(*)
         }
         

@@ -13,4 +13,6 @@ case class TopicWatchPath(sourceUrl: String) {
                                                  }
   
   def newPathTo(newPosition: Long): String = s"/${context}/watch/${topicName}/?from=${newPosition}"
+  
+  def newPathToLatest: String = s"/${context}/watch/${topicName}"
 }

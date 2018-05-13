@@ -29,7 +29,7 @@ class TopicWatchPathSpec extends WordSpec with Matchers {
     
     "return a new path with position" when {
       val previousPosition = 42
-      Seq(s"/context/watch/topic_name",
+      Seq("/context/watch/topic_name",
           s"/context/watch/topic_name?from=${previousPosition}",
           s"/context/watch/topic_name/?from=${previousPosition}").foreach { path => 
             s"update the position and the path is ${path}" in {
@@ -37,6 +37,18 @@ class TopicWatchPathSpec extends WordSpec with Matchers {
               val newPath = TopicWatchPath(path).newPathTo(position) 
               
               TopicWatchPath(newPath).position shouldBe Some(position)
+            }
+      }
+    }
+    
+    "return a new path without position" when {
+      val previousPosition = 42
+      Seq(s"/context/watch/topic_name?from=${previousPosition}",
+          s"/context/watch/topic_name/?from=${previousPosition}").foreach { path => 
+            s"update the position and the path is ${path}" in {
+              val newPath = TopicWatchPath(path).newPathToLatest
+              
+              TopicWatchPath(newPath).position shouldBe None
             }
       }
     }
