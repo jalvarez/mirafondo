@@ -9,7 +9,8 @@ object Welcome {
     for (inputTopic <- getInputValue("inputTopic");
          inputFrom <- getInputValue("inputFrom");
          button <- Try(dom.document.getElementById("watchButton").asInstanceOf[dom.html.Button]);
-         inputLimit <- getInputValue("inputLimit")) {
+         inputLimit <- getInputValue("inputLimit");
+         form <- Try(dom.document.getElementById("formWatch").asInstanceOf[dom.html.Form])) {
       
       Seq(inputTopic, inputFrom).foreach { input =>
         input.onkeydown = { ke =>
@@ -23,9 +24,13 @@ object Welcome {
         for (tn <- topicName) navigateTo(context, tn, from)
       }
       
-      inputLimit.value = MESSAGES_LIMIT.toString
+      inputLimit.value = getLimit.toString
       inputLimit.onkeyup = { _ =>
         updateLimit(inputLimit.value.toInt)
+      }
+      
+      form.onsubmit = { _ =>
+        for (tn <- topicName) navigateTo(context, tn, from)
       }
     }
   }
@@ -49,6 +54,11 @@ object Welcome {
   
   private def getInputValue(inputId: String): Try[dom.html.Input] = {
     Try(dom.document.getElementById(inputId).asInstanceOf[dom.html.Input])
+  }
+  
+  private def getLimit: Int = {
+    val limitInSession = dom.window.sessionStorage.getItem("LIMIT")
+    if (limitInSession != null) limitInSession.toInt else MESSAGES_LIMIT
   }
   
   private def updateLimit(limit: Int): Unit = {
