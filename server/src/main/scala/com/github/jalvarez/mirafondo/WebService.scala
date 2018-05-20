@@ -14,34 +14,36 @@ trait WebService extends Directives {
   val messageSource: MessageSource
   
   def route = {
-    pathPrefix(context) {
-      pathSingleSlash {
-        get {
-          complete {
-            html.index.render(context)
-          }
-        }
-      } ~
-      path("watch" / Remaining) { topicName =>
-        get {
-          complete {
-            html.watch.render(context, topicName)
-          }
-        } 
-      } ~
-      path("topic" / Remaining) { topicName =>
-        parameters('from.as[Long].?, 'limit.as[Int].?) { (from, limit) =>
+    redirectToNoTrailingSlashIfPresent(StatusCodes.MovedPermanently) {
+      pathPrefix(context) {
+        pathEnd {
           get {
-            complete(HttpEntity(ContentType(MediaTypes.`application/json`),
-                     messageSource(topicName, limit.getOrElse(MESSAGES_LIMIT), from)))
+            complete {
+              html.index.render(context)
+            }
           }
-        }
-      } ~
-      pathPrefix("assets" / Remaining) { file =>
-        // optionally compresses the response with Gzip or Deflate
-        // if the client accepts compressed responses
-        encodeResponse {
-          getFromResource("public/" + file)
+        } ~
+        path("watch" / Remaining) { topicName =>
+          get {
+            complete {
+              html.watch.render(context, topicName)
+            }
+          } 
+        } ~
+        path("topic" / Remaining) { topicName =>
+          parameters('from.as[Long].?, 'limit.as[Int].?) { (from, limit) =>
+            get {
+              complete(HttpEntity(ContentType(MediaTypes.`application/json`),
+                       messageSource(topicName, limit.getOrElse(MESSAGES_LIMIT), from)))
+            }
+          }
+        } ~
+        pathPrefix("assets" / Remaining) { file =>
+          // optionally compresses the response with Gzip or Deflate
+          // if the client accepts compressed responses
+          encodeResponse {
+            getFromResource("public/" + file)
+          }
         }
       }
     }

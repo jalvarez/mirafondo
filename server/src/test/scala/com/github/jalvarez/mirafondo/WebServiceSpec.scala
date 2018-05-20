@@ -34,5 +34,17 @@ class WebServiceSpec extends WordSpec with Matchers with ScalatestRouteTest with
         status shouldEqual StatusCodes.OK
       }
     }
+    
+    "return welcome page without end slash" in {
+      Get(s"/${webservice.context}") ~> webservice.route ~> check {
+        status shouldEqual StatusCodes.OK
+      }
+    }
+    
+    "redirect to welcome page with end slash" in {
+      Get(s"/${webservice.context}/") ~> webservice.route ~> check {
+        status shouldEqual StatusCodes.MovedPermanently
+      }
+    }
   }
 }
