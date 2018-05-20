@@ -10,16 +10,27 @@ import akka.util.ByteString
 
 class WebServiceSpec extends WordSpec with Matchers with ScalatestRouteTest with MockFactory {
   "The Webservice" should {
+    val webservice = new WebService {
+        override val context = "test"
+        override val messageSource = mock[MessageSource]
+    }
+    
     "call to message source for get topic with from parameter" in {
-      val webservice = new WebService {
-          override val context = "test"
-          override val messageSource = mock[MessageSource]
-      }
       val from = 101L
       
       (webservice.messageSource.apply _).expects(*, *, Some(from)).returning { Source.empty[ByteString] }
       
       Get(s"/${webservice.context}/topic/test?from=${from}") ~> webservice.route ~> check {
+        status shouldEqual StatusCodes.OK
+      }
+    }
+    
+    "call to message source for get topic with limit parameter" in {
+      val limit = 50
+      
+      (webservice.messageSource.apply _).expects(*, limit, *).returning { Source.empty[ByteString] }
+      
+      Get(s"/${webservice.context}/topic/test?limit=${limit}") ~> webservice.route ~> check {
         status shouldEqual StatusCodes.OK
       }
     }

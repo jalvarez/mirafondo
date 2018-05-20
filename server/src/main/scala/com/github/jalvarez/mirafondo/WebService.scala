@@ -30,10 +30,10 @@ trait WebService extends Directives {
         } 
       } ~
       path("topic" / Remaining) { topicName =>
-        parameters('from.as[Long].?) { (from) =>
+        parameters('from.as[Long].?, 'limit.as[Int].?) { (from, limit) =>
           get {
             complete(HttpEntity(ContentType(MediaTypes.`application/json`),
-                     messageSource(topicName, MESSAGES_LIMIT, from)))
+                     messageSource(topicName, limit.getOrElse(MESSAGES_LIMIT), from)))
           }
         }
       } ~

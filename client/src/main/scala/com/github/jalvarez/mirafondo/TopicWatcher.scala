@@ -31,7 +31,7 @@ object TopicWatcher {
                .onRunOutMessages { lastMessage =>
                  updateButton("next-button", topicWatchPath, lastMessage.map{_.position + 1})
                }
-               .load(topicWatchPath.topicName, topicWatchPath.position)
+               .load(topicWatchPath.topicName, topicWatchPath.position, limit)
                
     for (button <- Try(dom.document.getElementById("latest-button").asInstanceOf[dom.html.Button])) {
       button.style.visibility = "visible"
@@ -55,5 +55,11 @@ object TopicWatcher {
           button.style.visibility = "hidden"
       }
     }
+  }
+  
+  private def limit: Int = {
+    val session = dom.window.sessionStorage
+    val limitInSession = session.getItem("LIMIT")
+    if (limitInSession != null) limitInSession.toInt else Defaults.MESSAGES_LIMIT
   }
 }

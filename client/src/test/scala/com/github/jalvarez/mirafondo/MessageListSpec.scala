@@ -101,6 +101,25 @@ class MessageListSpec extends WordSpec with Matchers with MockFactory with Messa
         list.load(f.topic, Some(from))
       }
     }
+    
+    "is loaded with a limit not equal to MESSAGES_LIMIT" must {
+      "send a xml http request using a limit parameter" in {
+        val f = fixtures
+        val limit = 50
+        
+        val xhrMock = mock[SimpleHttpRequest]
+        
+        inSequence {
+          (xhrMock.open _).expects("GET", s"/${f.context}/topic/${f.topic}?limit=${limit}")
+          (xhrMock.setOnprogressCallback _).expects(*)
+          (xhrMock.setOnloadCallback _).expects(*)
+          (xhrMock.send _).expects(*)
+        }
+        
+        val list = new MessageList(xhrMock, f.context)
+        list.load(f.topic, None, limit)
+      }
+    }
   }
   
   def fixtures = new {

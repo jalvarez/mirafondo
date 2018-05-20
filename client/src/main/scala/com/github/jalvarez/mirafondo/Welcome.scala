@@ -2,12 +2,14 @@ package com.github.jalvarez.mirafondo
 
 import org.scalajs.dom
 import scala.util.Try
+import shared.Defaults._
 
 object Welcome {
   def run(context: String, urlPath: String): Unit = {
     for (inputTopic <- getInputValue("inputTopic");
          inputFrom <- getInputValue("inputFrom");
-         button <- Try(dom.document.getElementById("watchButton").asInstanceOf[dom.html.Button])) {
+         button <- Try(dom.document.getElementById("watchButton").asInstanceOf[dom.html.Button]);
+         inputLimit <- getInputValue("inputLimit")) {
       
       Seq(inputTopic, inputFrom).foreach { input =>
         input.onkeydown = { ke =>
@@ -19,6 +21,11 @@ object Welcome {
       
       button.onclick = { _ =>
         for (tn <- topicName) navigateTo(context, tn, from)
+      }
+      
+      inputLimit.value = MESSAGES_LIMIT.toString
+      inputLimit.onkeyup = { _ =>
+        updateLimit(inputLimit.value.toInt)
       }
     }
   }
@@ -42,5 +49,9 @@ object Welcome {
   
   private def getInputValue(inputId: String): Try[dom.html.Input] = {
     Try(dom.document.getElementById(inputId).asInstanceOf[dom.html.Input])
+  }
+  
+  private def updateLimit(limit: Int): Unit = {
+    dom.window.sessionStorage.setItem("LIMIT", limit.toString)
   }
 }
